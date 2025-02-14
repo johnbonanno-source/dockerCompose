@@ -1,19 +1,24 @@
-version: '3.8'
-
+version: '3'
 services:
-  postgres:
-    image: postgres:latest  # Use the latest official PostgreSQL image
-    container_name: my_postgres_container
+  db:
+    image: postgres:latest
     environment:
-      POSTGRES_USER: myuser         # The username for the PostgreSQL database
-      POSTGRES_PASSWORD: mypassword # The password for the PostgreSQL database
-      POSTGRES_DB: mydatabase      # The database name to create
-    ports:
-      - "5432:5432"                # Map the host port 5432 to the container port 5432
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: cartrader
+      POSTGRES_DB: car_trader
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Mount a named volume to persist data
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+    ports:
+      - "5432:5432"  
+
+networks:
+  mynetwork:
+    driver: bridge
 
 volumes:
   postgres_data:
-    driver: local  # Volume to persist data
+    driver: local
 
+#docker-compose up --build
