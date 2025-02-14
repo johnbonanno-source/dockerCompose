@@ -1,4 +1,4 @@
-version: '3'
+
 services:
   db:
     image: postgres:latest
@@ -8,10 +8,23 @@ services:
       POSTGRES_DB: car_trader
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql  # Mount the SQL script here
     networks:
       - mynetwork
     ports:
-      - "5432:5432"  
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Use your preferred email
+      PGADMIN_DEFAULT_PASSWORD: admin        # Use your preferred password
+    ports:
+      - "80:80"  # Access PGAdmin in your browser at http://localhost:80
+    networks:
+      - mynetwork
+    depends_on:
+      - db  # Ensure PGAdmin waits for PostgreSQL to start
 
 networks:
   mynetwork:
@@ -20,5 +33,7 @@ networks:
 volumes:
   postgres_data:
     driver: local
+    
+    
+#docker inspect -f '{{.State.Pid}}' docker-db-1
 
-#docker-compose up --build
